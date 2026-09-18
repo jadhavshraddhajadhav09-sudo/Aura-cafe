@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura AI Coffee Shop Order Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                <div class="logo-text">
+                    <span class="brand-name">AURA CAFE</span>
+                    <span class="brand-tag">GROQ AI POS</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link active" id="nav-customer-link">
+                    <i class="fa-solid fa-utensils"></i> Customer Order
+                </a>
+                <a href="/staff" class="nav-link " id="nav-staff-link">
+                    <i class="fa-solid fa-bell-concierge"></i> Staff Queue
+                    <span class="badge badge-pulse" id="nav-queue-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            <div class="nav-status">
+                <span class="status-indicator online"></span>
+                <span class="status-label">Groq Llama 3.3 Engine</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="app-main">
+        <div class="page-container">
+            <div class="hero-card glass-card animate-fade-in">
+                <div class="hero-content-left">
+                    <div class="hero-badge">
+                        <i class="fa-solid fa-robot"></i> <span>Aura AI Barista • Ready to serve!</span>
+                    </div>
+                    <h1 class="hero-title">Coffee & Snack Order Assistant</h1>
+                    <p class="hero-subtitle">
+                        Welcome! I'm <strong>Aura</strong>, your friendly AI barista. Browse our cozy menu, customize
+                        your favorite coffee, add fresh snacks, calculate your bill, and get instant preparation time
+                        estimates!
+                    </p>
+                    <div class="hero-quick-features">
+                        <span class="feature-tag"><i class="fa-solid fa-mug-hot text-amber"></i> Artisan Coffees</span>
+                        <span class="feature-tag"><i class="fa-solid fa-cookie-bite text-purple"></i> Baked
+                            Snacks</span>
+                        <span class="feature-tag"><i class="fa-solid fa-clock text-cyan"></i> Instant Prep
+                            Estimates</span>
+                        <span class="feature-tag"><i class="fa-solid fa-bolt text-green"></i> Fast Order Numbers</span>
+                    </div>
+                </div>
+                <div class="hero-image-wrapper">
+                    <img src="/static/images/coffee_assistant.jpg" alt="Aura AI Coffee Assistant Barista"
+                        class="hero-ai-img" />
+                    <div class="hero-img-badge">
+                        <i class="fa-solid fa-sparkles text-amber"></i> Friendly AI Assistant
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-grid">
+                <div class="left-workspace">
+                    <div class="glass-card menu-card">
+                        <div class="menu-tabs">
+                            <button type="button" class="tab-btn active" onclick="switchTab('coffees')">
+                                <i class="fa-solid fa-mug-hot"></i> Coffee Menu
+                            </button>
+                            <button type="button" class="tab-btn" onclick="switchTab('snacks')">
+                                <i class="fa-solid fa-cookie-bite"></i> Snacks & Bakery
+                            </button>
+                            <button type="button" class="tab-btn" onclick="switchTab('ai-prompt')">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Voice / Prompt
+                            </button>
+                        </div>
+
+                        <div id="tab-coffees" class="tab-pane active">
+                            <div class="section-intro">
+                                <p><i class="fa-solid fa-circle-info"></i> Click any coffee to customize milk, size,
+                                    espresso shots & temperature!</p>
+                            </div>
+                            <div id="coffee-grid" class="menu-grid"></div>
+                        </div>
+
+                        <div id="tab-snacks" class="tab-pane" style="display: none;">
+                            <div class="section-intro">
+                                <p><i class="fa-solid fa-circle-info"></i> Freshly baked treats! Choose warming and
+                                    preparation options.</p>
+                            </div>
+                            <div id="snack-grid" class="menu-grid"></div>
+                        </div>
+
+                        <div id="tab-ai-prompt" class="tab-pane" style="display: none;">
+                            <form id="order-form" onsubmit="handleParseOrder(event)">
+                                <div class="form-group">
+                                    <label for="raw-order-input"><i class="fa-solid fa-comment-dots text-cyan"></i> Tell
+                                        Aura what you'd like to order in plain English:</label>
+                                    <textarea id="raw-order-input" rows="4"
+                                        placeholder="e.g. Hi Aura! I'd like 1 large iced caramel macchiato with oat milk and extra shot, plus 2 warm blueberry muffins!"
+                                        required></textarea>
+                                </div>
+                                <div class="presets-section">
+                                    <span class="presets-label"><i class="fa-solid fa-lightbulb text-amber"></i> Popular
+                                        Preset Combos:</span>
+                                    <div class="preset-chips">
+                                        <button type="button" class="preset-chip" onclick="applyPreset(1)">☕ Iced
+                                            Macchiato & Muffins</button>
+                                        <button type="button" class="preset-chip" onclick="applyPreset(2)">🥪 Latte &
+                                            Breakfast Club</button>
+                                        <button type="button" class="preset-chip" onclick="applyPreset(3)">🥐 Americano
+                                            & Croissant</button>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-secondary" onclick="clearInput()">
+                                        <i class="fa-solid fa-trash-can"></i> Clear
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" id="btn-parse">
+                                        <i class="fa-solid fa-sparkles"></i> Aura, Calculate My Bill!
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-workspace">
+                    <div class="glass-card order-review-card" id="review-card">
+                        <div class="empty-state" id="empty-state">
+                            <div class="empty-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                            <h4>Your Coffee & Snack Order is Empty</h4>
+                            <p>Select coffee/snacks from the menu or type your request on the left to start building
+                                your order!</p>
+                        </div>
+
+                        <div class="loading-state" id="loading-state" style="display: none;">
+                            <div class="spinner"></div>
+                            <p>Aura the AI Barista is calculating your order & prep time...</p>
+                        </div>
+
+                        <div class="parsed-content" id="parsed-content" style="display: none;">
+                            <div class="ai-greeting-bubble" id="ai-greeting">
+                                <div class="ai-avatar">🤖</div>
+                                <div class="ai-speech-text" id="ai-greeting-text">
+                                    Hello! I'm Aura. I've calculated your total bill and estimated preparation time
+                                    below!
+                                </div>
+                            </div>
+
+                            <div class="card-header border-bottom">
+                                <div>
+                                    <h3 id="order-summary-title">Order Breakdown</h3>
+                                    <span class="source-badge" id="order-source-badge">Aura AI Engine</span>
+                                </div>
+                                <div class="prep-time-pill" title="Estimated preparation time">
+                                    <i class="fa-solid fa-stopwatch text-amber"></i>
+                                    <span id="prep-time-val">4 - 6 mins</span>
+                                </div>
+                            </div>
+
+                            <div class="customer-info-box">
+                                <label for="customer-name-input"><i class="fa-solid fa-user-gear"></i> Customer Name /
+                                    Pickup Name:</label>
+                                <input type="text" id="customer-name-input" placeholder="e.g. Alex" value="Alex">
+                            </div>
+
+                            <div class="items-list-container">
+                                <label><i class="fa-solid fa-basket-shopping"></i> Selected Items:</label>
+                                <div id="items-list" class="items-list"></div>
+                            </div>
+
+                            <div class="instructions-box" id="instructions-container" style="display: none;">
+                                <i class="fa-solid fa-note-sticky"></i>
+                                <strong>Special Notes:</strong> <span id="special-instructions-text">None</span>
+                            </div>
+
+                            <div class="price-breakdown">
+                                <div class="price-row">
+                                    <span>Subtotal</span>
+                                    <span id="subtotal-val">$0.00</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Estimated Tax (8%)</span>
+                                    <span id="tax-val">$0.00</span>
+                                </div>
+                                <div class="price-row total-row">
+                                    <span>Total Bill</span>
+                                    <span id="total-val" class="text-amber">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="confirm-actions">
+                                <button type="button" class="btn btn-success btn-block btn-lg" id="btn-confirm"
+                                    onclick="handleConfirmOrder()">
+                                    <i class="fa-solid fa-circle-check"></i> Confirm Order & Get Order #
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="customize-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content glass-card animate-pop max-width-md">
+                    <div class="modal-header">
+                        <h3 id="custom-modal-title"><i class="fa-solid fa-sliders text-cyan"></i> Customize Your Item
+                        </h3>
+                        <button class="modal-close" onclick="closeCustomizeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body" id="custom-modal-body"></div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeCustomizeModal()">Cancel</button>
+                        <button class="btn btn-primary" onclick="confirmCustomizeItem()"><i
+                                class="fa-solid fa-plus"></i> Add to Order</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="active-order-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content glass-card animate-pop">
+                    <div class="modal-header">
+                        <h3><i class="fa-solid fa-mug-saucer text-success"></i> Order Sent to Barista!</h3>
+                        <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="order-receipt-badge">
+                            <span class="receipt-label">YOUR ORDER NUMBER</span>
+                            <h2 class="order-id-display" id="placed-order-id">ORD-101</h2>
+                        </div>
+
+                        <div class="prep-time-banner">
+                            <i class="fa-solid fa-clock-rotate-left fa-spin text-amber"></i>
+                            <div>
+                                <span class="prep-banner-title">Estimated Preparation Time</span>
+                                <div class="prep-banner-time" id="placed-prep-time">5 minutes</div>
+                            </div>
+                        </div>
+
+                        <p class="friendly-confirmation-text">
+                            ☕ Aura and our kitchen baristas have received your order! We're crafting your drink and
+                            heating your snacks right now.
+                        </p>
+
+                        <div class="tracking-steps">
+                            <div class="step active" id="step-pending"><i class="fa-solid fa-check"></i>
+                                <span>Received</span>
+                            </div>
+                            <div class="step active" id="step-preparing"><i class="fa-solid fa-fire-burner"></i>
+                                <span>Preparing</span>
+                            </div>
+                            <div class="step" id="step-ready"><i class="fa-solid fa-mug-hot"></i> <span>Ready
+                                    Soon</span></div>
+                        </div>
+
+                        <div class="modal-footer-centered">
+                            <a href="/staff" class="btn btn-outline" target="_blank">
+                                <i class="fa-solid fa-kitchen-set"></i> View Kitchen Display Screen
+                            </a>
+                            <button class="btn btn-primary" onclick="closeOrderModal()">Order Something Else</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+
+    <script src="/static/js/customer.js"></script>
+</body>
+
+</html>
