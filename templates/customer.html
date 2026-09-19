@@ -110,6 +110,19 @@
                                     <textarea id="raw-order-input" rows="4"
                                         placeholder="e.g. Hi Aura! I'd like 1 large iced caramel macchiato with oat milk and extra shot, plus 2 warm blueberry muffins!"
                                         required></textarea>
+                                    <div style="margin-top:10px; display:flex; align-items:center; gap:10px;">
+                                        <button type="button" id="mic-btn" class="btn btn-secondary"
+                                            onclick="toggleMic()">
+                                            <i class="fa-solid fa-microphone"></i> Speak
+                                        </button>
+                                        <span id="mic-status" style="font-size:0.9rem; opacity:0.8;"></span>
+                                    </div>
+
+
+
+
+
+
                                 </div>
                                 <div class="presets-section">
                                     <span class="presets-label"><i class="fa-solid fa-lightbulb text-amber"></i> Popular
@@ -295,6 +308,49 @@
     </script>
 
     <script src="/static/js/customer.js"></script>
+    <script>
+        let auraRec = null;
+        let auraListening = false;
+
+        function toggleMic() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const status = document.getElementById('mic-status');
+            const btn = document.getElementById('mic-btn');
+            const input = document.getElementById('raw-order-input');
+
+            if (!SR) {
+                showToast('Voice input works in Chrome or Edge only.', 'error');
+                return;
+            }
+            if (auraListening) { auraRec.stop(); return; }
+
+            auraRec = new SR();
+            auraRec.lang = 'en-IN';
+            auraRec.interimResults = true;
+            auraRec.continuous = false;
+            const startText = input.value ? input.value + ' ' : '';
+
+            auraRec.onstart = () => {
+                auraListening = true;
+                btn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> Stop';
+                status.textContent = 'Listening... speak now';
+            };
+            auraRec.onresult = (e) => {
+                let text = '';
+                for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+                input.value = startText + text;
+            };
+            auraRec.onerror = (e) => {
+                showToast(e.error === 'not-allowed' ? 'Please allow microphone access.' : 'Voice error: ' + e.error, 'error');
+            };
+            auraRec.onend = () => {
+                auraListening = false;
+                btn.innerHTML = '<i class="fa-solid fa-microphone"></i> Speak';
+                status.textContent = '';
+            };
+            auraRec.start();
+        }
+    </script>
 </body>
 
 </html>
