@@ -16,9 +16,12 @@ This project shows a simple, clean website for a cafe. I built it to practice we
 - Styling pages with CSS
 - Managing code using Git and GitHub
 - Deploying a project online
-
+## Features
+- Customer ordering with a coffee and snack menu
+- AI voice and text ordering powered by Groq (Llama 3.3)
+- Staff queue page for baristas
+- Instant bill and preparation time estimates
 ## Live link
-Coming soon
-
+https://aura-cafe-obts.onrender.com/
 ## Author
 Shraddha Jadhav, ISE student
